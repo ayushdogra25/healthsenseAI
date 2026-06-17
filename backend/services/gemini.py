@@ -1,19 +1,6 @@
-import os
 import warnings
 
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", message=".*google.generativeai.*", category=FutureWarning)
-    import google.generativeai as genai
 from backend.config import settings
-
-# Configure Gemini API if key is available
-api_key_configured = False
-if settings.GEMINI_API_KEY:
-    try:
-        genai.configure(api_key=settings.GEMINI_API_KEY)
-        api_key_configured = True
-    except Exception as e:
-        print(f"Error configuring Gemini API: {e}")
 
 def get_mock_explanation(disease_name: str, confidence_score: float, symptoms: list[str]) -> str:
     """
@@ -64,18 +51,18 @@ def generate_explanation(disease_name: str, confidence_score: float, symptoms: l
     """
     Generates a patient-friendly explanation of the predicted disease using Gemini.
     """
-    if not api_key_configured or not settings.GEMINI_API_KEY:
+    if not settings.GEMINI_API_KEY:
         print("Gemini API key is not configured. Using fallback local response generator.")
         return get_mock_explanation(disease_name, confidence_score, symptoms)
-        
+
     symptoms_str = ", ".join(symptoms)
-    
+
     prompt = f"""
     You are an empathetic, educational health AI assistant. A user has reported the following symptoms: {symptoms_str}.
     Our system has predicted that the user might have: {disease_name} (confidence score: {confidence_score}%).
-    
+
     Please write an educational explanation for the user about {disease_name} based on their symptoms.
-    
+
     You MUST adhere strictly to the following rules:
     1. Structure the response into exactly four sections with these markdown headings:
        ### Possible Explanation
@@ -89,11 +76,21 @@ def generate_explanation(disease_name: str, confidence_score: float, symptoms: l
     6. Include a markdown warning block under the "When to Consult a Doctor" section specifying clear warning signs (like shortness of breath, high fever, chest pain).
     7. Do not provide dosage instructions, treatment plans, emergency triage decisions, or certainty that the user has the condition.
     8. If symptoms include emergency warning signs, tell the user to seek urgent medical attention without attempting to diagnose the cause.
-    
+
     Provide only the markdown response without any additional conversational text.
     """
-    
+
     try:
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                message=".*google.generativeai.*",
+                category=FutureWarning,
+            )
+            import google.generativeai as genai
+
+        genai.configure(api_key=settings.GEMINI_API_KEY)
+
         # Use gemini-1.5-flash which is widely available and fast
         model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(

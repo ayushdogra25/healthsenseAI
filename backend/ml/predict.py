@@ -10,14 +10,11 @@ class DiseasePredictor:
         self.model_path = os.path.join(self.base_dir, "model.joblib")
         self.le_path = os.path.join(self.base_dir, "label_encoder.joblib")
         self.symptoms_path = os.path.join(self.base_dir, "symptom_columns.json")
-        
+
         self.model = None
         self.label_encoder = None
         self.symptom_columns = None
         self.symptom_to_idx = {}
-        
-        # Load assets if they exist
-        self.load_assets()
 
     def load_assets(self):
         if (os.path.exists(self.model_path) and 
@@ -95,5 +92,4 @@ class DiseasePredictor:
             "matched_symptoms": list(set(matched_symptoms)) # Remove duplicates if any
         }
 
-# Global predictor instance
-predictor = DiseasePredictor()
+

@@ -6,7 +6,7 @@ from backend.database.connection import get_db
 from backend.database.models import Prediction
 from backend.auth.jwt import get_current_user
 from backend.database.models import User
-from backend.ml.predict import predictor
+from backend.ml.predict import DiseasePredictor
 from backend.services.gemini import generate_explanation
 
 router = APIRouter(prefix="/api", tags=["prediction"])
@@ -68,6 +68,8 @@ def predict_health(request: PredictRequest, current_user: User = Depends(get_cur
         )
         
     try:
+        predictor = DiseasePredictor()
+
         # 1. Run Machine Learning Model Prediction
         prediction_results = predictor.predict_diseases(request.symptoms)
         predictions = prediction_results["predictions"]  # list of top 3 predictions
@@ -128,12 +130,14 @@ def get_all_symptoms():
     Returns the full list of 377 symptoms that the model is trained on.
     Used for the searchable dropdown on the frontend.
     """
+    predictor = DiseasePredictor()
+
     if predictor.symptom_columns is None:
-        # Attempt reloading
+        # Attempt lazy loading only when the endpoint is requested.
         predictor.load_assets()
-        
+
     if predictor.symptom_columns is None:
         # Fallback list if assets aren't built yet
         return ["fever", "cough", "headache", "shortness of breath", "fatigue", "nausea", "vomiting", "sore throat", "diarrhea"]
-        
+
     return predictor.symptom_columns
