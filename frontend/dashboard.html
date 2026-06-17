@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - HealthSenseAI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              light: '#f0fdf4',
+              primary: '#0284c7',
+              secondary: '#16a34a',
+              dark: '#0f172a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col justify-between transition-colors duration-200">
+
+  <!-- Header / Nav -->
+  <header class="fixed top-0 w-full z-50 glass shadow-sm h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-6">
+      <a href="dashboard.html" class="flex items-center gap-2">
+        <div class="bg-sky-500 text-white p-2 rounded-xl shadow-md">
+          <i class="fa-solid fa-heart-pulse text-xl"></i>
+        </div>
+        <span class="text-xl font-bold bg-gradient-to-r from-sky-600 to-emerald-600 bg-clip-text text-transparent dark:from-sky-400 dark:to-emerald-400">
+          HealthSenseAI
+        </span>
+      </a>
+      
+      <!-- Nav Links -->
+      <nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
+        <a href="dashboard.html" class="nav-link-active pb-1">Dashboard</a>
+        <a href="check.html" class="text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-300 pb-1">Symptom Checker</a>
+        <a href="history.html" class="text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-300 pb-1">History</a>
+        <a href="hospitals.html" class="text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-300 pb-1">Find Hospitals</a>
+        <a href="profile.html" class="text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-300 pb-1">Profile</a>
+        <a href="admin.html" class="admin-only-link hidden text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 pb-1">Admin Panel</a>
+      </nav>
+    </div>
+    
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 border-l border-slate-200 dark:border-slate-700 pl-4">
+        <div class="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center font-bold text-sm shadow-md">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <span class="user-name-display hidden sm:inline text-sm font-bold truncate max-w-[120px]">User</span>
+      </div>
+      
+      <button id="logout-btn" class="text-slate-400 hover:text-red-500 dark:hover:text-red-400 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Log Out">
+        <i class="fa-solid fa-right-from-bracket text-lg"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+    <!-- Welcome Header -->
+    <div class="mb-10 animate-fade-in">
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+        Welcome, <span class="user-name-display text-sky-600 dark:text-sky-400">User</span>!
+      </h1>
+      <p class="text-slate-500 dark:text-slate-400 mt-2">Check symptoms, consult our AI health recommendation model, or view your history report summaries.</p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10 animate-fade-in" style="animation-delay: 0.05s;">
+      <!-- Stat 1 -->
+      <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-lg flex items-center gap-5">
+        <div class="w-12 h-12 rounded-2xl bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xl">
+          <i class="fa-solid fa-clipboard-check"></i>
+        </div>
+        <div>
+          <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Health Checks</span>
+          <h2 id="stat-checks" class="text-2xl font-bold mt-0.5">0</h2>
+        </div>
+      </div>
+
+      <!-- Stat 2 -->
+      <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-lg flex items-center gap-5">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl">
+          <i class="fa-solid fa-calendar-days"></i>
+        </div>
+        <div>
+          <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Last Check Date</span>
+          <h2 id="stat-last-date" class="text-base font-bold mt-1 text-slate-600 dark:text-slate-300">No checks yet</h2>
+        </div>
+      </div>
+      
+      <!-- Quick Info card -->
+      <div class="bg-gradient-to-r from-sky-500 to-emerald-500 p-6 rounded-3xl text-white shadow-lg flex items-center gap-5 sm:col-span-2 lg:col-span-1">
+        <div class="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center text-xl">
+          <i class="fa-solid fa-circle-info"></i>
+        </div>
+        <div class="flex-grow">
+          <h3 class="font-bold text-sm">Educational Assistant</h3>
+          <p class="text-xs text-slate-100 mt-1">This tool does not provide diagnoses. Always consult a medical professional.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="animate-fade-in" style="animation-delay: 0.1s;">
+      <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+        <i class="fa-solid fa-cube text-sky-500"></i> Quick Operations
+      </h3>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Action 1 -->
+        <a href="check.html" class="group bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-44">
+          <div class="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-circle-question"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-lg group-hover:text-sky-500 transition-colors">New Health Check</h4>
+            <p class="text-slate-400 text-xs mt-1">Check symptoms now using typing, voice, or multi-select dropdown</p>
+          </div>
+        </a>
+
+        <!-- Action 2 -->
+        <a href="history.html" class="group bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-44">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-history"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-lg group-hover:text-emerald-500 transition-colors">View History</h4>
+            <p class="text-slate-400 text-xs mt-1">Browse and search previous check predictions and analysis reports</p>
+          </div>
+        </a>
+
+        <!-- Action 3 -->
+        <a href="hospitals.html" class="group bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-44">
+          <div class="w-10 h-10 rounded-xl bg-yellow-100 dark:bg-yellow-950 text-yellow-600 dark:text-yellow-400 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-map-location-dot"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-lg group-hover:text-yellow-600 transition-colors">Nearby Hospitals</h4>
+            <p class="text-slate-400 text-xs mt-1">Locate close health facilities on an interactive OpenStreetMap</p>
+          </div>
+        </a>
+
+        <!-- Action 4 -->
+        <a href="profile.html" class="group bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-44">
+          <div class="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-950 text-violet-600 dark:text-violet-400 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-id-card"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-lg group-hover:text-violet-500 transition-colors">User Profile</h4>
+            <p class="text-slate-400 text-xs mt-1">Edit user details, gender, age, and view profile summary statistics</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile Footer / Bar -->
+  <footer class="py-6 border-t border-slate-100 dark:border-slate-800 text-center text-xs text-slate-400 bg-white dark:bg-slate-950">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <span>&copy; 2026 HealthSenseAI. Educational and guidance platform only.</span>
+      <span class="text-red-500 font-medium"><i class="fa-solid fa-triangle-exclamation"></i> Does not replace doctor consultation.</span>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Fetch stats on load
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const profileData = await api.getProfile();
+        
+        // Update stats
+        document.getElementById('stat-checks').textContent = profileData.stats.total_health_checks;
+        
+        const lastCheck = profileData.stats.last_check_date;
+        if (lastCheck) {
+          const date = new Date(lastCheck);
+          document.getElementById('stat-last-date').textContent = date.toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+          });
+        } else {
+          document.getElementById('stat-last-date').textContent = 'No checks yet';
+        }
+      } catch (err) {
+        console.error("Failed to load dashboard statistics:", err);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+healthmate.db
+test_healthsense.db
+backend/static/reports/*.pdf
+Final_Augmented_dataset_Diseases_and_Symptoms.csv
+Final_Augmented_dataset_Diseases_and_Symptoms.csv 

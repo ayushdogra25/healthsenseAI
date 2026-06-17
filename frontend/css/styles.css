@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --surface: #f8fbff;
+  --surface-2: #ffffff;
+  --surface-3: #f3f7fb;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --primary: #0ea5e9;
+  --primary-dark: #0284c7;
+}
+
+body {
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at top, rgba(14, 165, 233, 0.07), transparent 18%),
+    linear-gradient(180deg, #f8fbff 0%, #f7f9fc 100%);
+  color: var(--text);
+}
+
+::selection {
+  background: rgba(14, 165, 233, 0.18);
+}
+
+/* Custom scrollbar styling for modern visual aesthetics */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Dark Mode Scrollbars */
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Custom Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulseSoft {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 0.9;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in {
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pulse-soft {
+  animation: pulseSoft 2s infinite ease-in-out;
+}
+
+/* Glassmorphism Classes */
+.glass {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.06);
+}
+
+.dark .glass {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Leaflet map styles */
+#map {
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  z-index: 1;
+}
+
+.hospital-popup .leaflet-popup-content-wrapper {
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+}
+
+.hospital-popup .leaflet-popup-content h3 {
+  font-weight: 700;
+  color: #0284c7;
+  margin-bottom: 0.25rem;
+}
+
+/* Dynamic styling for risk score progress bars */
+.progress-bar-glow {
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
+}
+
+/* Page loader spinner */
+.loader-spinner {
+  border-top-color: #0284c7;
+  animation: spinner 0.8s linear infinite;
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Navigation hover bar underlay */
+.nav-link-active {
+  color: #0284c7;
+  border-bottom: 2px solid #0284c7;
+}
+
+.dark .nav-link-active {
+  color: #38bdf8;
+  border-bottom: 2px solid #38bdf8;
+}

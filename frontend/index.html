@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthSenseAI - AI-Powered Personalized Health Guidance</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              light: '#f0fdf4', // Soft green background
+              primary: '#0284c7', // Sky blue primary
+              secondary: '#16a34a', // Emerald green
+              dark: '#0f172a', // Slate dark
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-200">
+
+  <!-- Header / Navigation -->
+  <header class="fixed top-0 w-full z-50 glass shadow-sm transition-all duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="bg-sky-500 text-white p-2 rounded-xl shadow-md">
+          <i class="fa-solid fa-heart-pulse text-xl"></i>
+        </div>
+        <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-sky-600 to-emerald-600 bg-clip-text text-transparent dark:from-sky-400 dark:to-emerald-400">
+          HealthSenseAI
+        </span>
+      </div>
+      
+      <nav class="hidden md:flex items-center gap-8 font-medium">
+        <a href="#features" class="hover:text-sky-500 transition-colors">Features</a>
+        <a href="#how-it-works" class="hover:text-sky-500 transition-colors">How It Works</a>
+        <a href="#disclaimer" class="hover:text-sky-500 transition-colors">Disclaimer</a>
+      </nav>
+      
+      <div class="flex items-center gap-4">
+        <a href="login.html" class="hidden sm:inline-block text-slate-600 hover:text-sky-600 dark:text-slate-300 dark:hover:text-sky-400 font-semibold transition-colors">
+          Login
+        </a>
+        <a href="register.html" class="bg-gradient-to-r from-sky-500 to-emerald-500 hover:from-sky-600 hover:to-emerald-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md shadow-sky-500/20 hover:shadow-sky-500/10 transition-all transform hover:-translate-y-0.5">
+          Get Started
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
+    <div class="flex-1 text-center lg:text-left animate-fade-in">
+      <div class="inline-flex items-center gap-2 bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
+        <i class="fa-solid fa-sparkles"></i> Next-Gen Symptom Analysis
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6">
+        AI-Powered Personalized <br>
+        <span class="bg-gradient-to-r from-sky-500 to-emerald-500 bg-clip-text text-transparent">
+          Health Guidance
+        </span>
+      </h1>
+      <p class="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-xl mx-auto lg:mx-0">
+        Empower yourself with intelligent disease prediction, custom Gemini AI health explanations, and a smart risk score based on your symptoms.
+      </p>
+      
+      <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4">
+        <a href="register.html" class="bg-sky-600 hover:bg-sky-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-sky-600/30 hover:shadow-sky-600/20 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+          Start Symptom Check <i class="fa-solid fa-arrow-right"></i>
+        </a>
+        <a href="#how-it-works" class="border border-slate-300 hover:border-sky-500 hover:text-sky-600 dark:border-slate-700 dark:hover:border-sky-400 dark:hover:text-sky-400 px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center gap-2">
+          Learn More
+        </a>
+      </div>
+    </div>
+    
+    <div class="flex-1 w-full max-w-md lg:max-w-none animate-fade-in" style="animation-delay: 0.15s;">
+      <div class="relative">
+        <!-- Background decorative glow -->
+        <div class="absolute -inset-1 rounded-3xl bg-gradient-to-r from-sky-400 to-emerald-400 opacity-20 blur-xl"></div>
+        <div class="relative bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-2xl p-6">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-3 h-3 rounded-full bg-red-500"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            </div>
+            <span class="text-xs font-semibold text-slate-400">Educational Assistant Mock</span>
+          </div>
+          
+          <div class="space-y-4">
+            <div class="flex gap-2">
+              <div class="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-robot"></i></div>
+              <div class="bg-slate-100 dark:bg-slate-700 p-3 rounded-2xl rounded-tl-none max-w-[80%] text-sm">
+                Hello! What symptoms are you experiencing today?
+              </div>
+            </div>
+            <div class="flex gap-2 justify-end">
+              <div class="bg-sky-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[80%] text-sm">
+                I have a high fever, severe cough, and body aches.
+              </div>
+              <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center text-xs"><i class="fa-solid fa-user"></i></div>
+            </div>
+            <div class="flex gap-2">
+              <div class="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-robot"></i></div>
+              <div class="bg-slate-100 dark:bg-slate-700 p-3 rounded-2xl rounded-tl-none max-w-[90%] text-sm space-y-2">
+                <p>Based on our machine learning analysis, here are the most probable matches:</p>
+                <div class="space-y-1 text-xs">
+                  <div class="flex justify-between font-semibold"><span>1. Influenza</span><span class="text-sky-600 dark:text-sky-400">86%</span></div>
+                  <div class="w-full bg-slate-200 dark:bg-slate-600 h-1.5 rounded-full"><div class="bg-sky-500 h-full rounded-full" style="width: 86%"></div></div>
+                  
+                  <div class="flex justify-between font-semibold mt-1"><span>2. Common Cold</span><span class="text-emerald-500">9%</span></div>
+                  <div class="w-full bg-slate-200 dark:bg-slate-600 h-1.5 rounded-full"><div class="bg-emerald-500 h-full rounded-full" style="width: 9%"></div></div>
+                </div>
+                <div class="bg-orange-50 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30 p-2 rounded-xl mt-2 text-xs flex gap-2">
+                  <i class="fa-solid fa-circle-exclamation text-orange-500 mt-0.5"></i>
+                  <div>
+                    <span class="font-bold text-orange-700 dark:text-orange-400">Moderate Risk (45/100)</span>
+                    <p class="text-slate-500 dark:text-slate-400 mt-0.5">Please rest and drink fluids. Monitor symptoms.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-20 bg-white dark:bg-slate-800/40 border-y border-slate-100 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h2 class="text-3xl font-bold tracking-tight mb-4">Comprehensive Health Assistance</h2>
+        <p class="text-slate-600 dark:text-slate-400">Built using advanced machine learning models and Gemini AI for intelligent explanations.</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="p-6 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:shadow-xl transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-keyboard"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Multi-Input Check</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm">Input your symptoms by typing free text, picking from a searchable multi-select list, or using your voice.</p>
+        </div>
+        
+        <!-- Feature 2 -->
+        <div class="p-6 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:shadow-xl transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-diagram-project"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Random Forest Prediction</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm">Highly trained Random Forest model predicts top 3 probable matching diseases with confidence scores.</p>
+        </div>
+        
+        <!-- Feature 3 -->
+        <div class="p-6 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:shadow-xl transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-950 text-violet-600 dark:text-violet-400 flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-sparkles"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Gemini AI Explanations</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm">Provides patient-friendly explanations, dietary requirements, general precautions, and consultation signs.</p>
+        </div>
+        
+        <!-- Feature 4 -->
+        <div class="p-6 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:shadow-xl transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-heart-pulse"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Health Risk Score</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm">Outputs an overall severity score (0 to 100) indicating whether symptoms warrant simple home rest or medical attention.</p>
+        </div>
+        
+        <!-- Feature 5 -->
+        <div class="p-6 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:shadow-xl transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-yellow-100 dark:bg-yellow-950 text-yellow-600 dark:text-yellow-400 flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-file-pdf"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Professional PDF Reports</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm">Download comprehensive, formatted health summaries with predictions, scores, and AI suggestions for your history.</p>
+        </div>
+        
+        <!-- Feature 6 -->
+        <div class="p-6 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:shadow-xl transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400 flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-map-location-dot"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Nearby Hospital Finder</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm">Uses Leaflet.js and OpenStreetMap (Overpass API) to locate and plot nearby medical centers dynamically on a map.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-16">
+      <h2 class="text-3xl font-bold tracking-tight mb-4">How It Works</h2>
+      <p class="text-slate-600 dark:text-slate-400">Get insights on your health in three simple steps.</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+      <!-- Steps Connector line -->
+      <div class="hidden md:block absolute top-1/2 left-[15%] right-[15%] h-0.5 bg-slate-200 dark:bg-slate-700 -z-10 transform -translate-y-6"></div>
+      
+      <!-- Step 1 -->
+      <div class="text-center flex flex-col items-center">
+        <div class="w-12 h-12 rounded-full bg-sky-500 text-white flex items-center justify-center text-xl font-bold shadow-md shadow-sky-500/20 mb-6">
+          1
+        </div>
+        <h3 class="text-lg font-bold mb-2">Enter Symptoms</h3>
+        <p class="text-slate-600 dark:text-slate-400 text-sm max-w-xs">Type your symptoms, speak them, or select them from the dropdown list on the checker page.</p>
+      </div>
+      
+      <!-- Step 2 -->
+      <div class="text-center flex flex-col items-center">
+        <div class="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xl font-bold shadow-md shadow-emerald-500/20 mb-6">
+          2
+        </div>
+        <h3 class="text-lg font-bold mb-2">Predictive Analysis</h3>
+        <p class="text-slate-600 dark:text-slate-400 text-sm max-w-xs">Our Random Forest model matches symptoms against our vocabulary and scores conditions.</p>
+      </div>
+      
+      <!-- Step 3 -->
+      <div class="text-center flex flex-col items-center">
+        <div class="w-12 h-12 rounded-full bg-sky-500 text-white flex items-center justify-center text-xl font-bold shadow-md shadow-sky-500/20 mb-6">
+          3
+        </div>
+        <h3 class="text-lg font-bold mb-2">Get AI Guidance</h3>
+        <p class="text-slate-600 dark:text-slate-400 text-sm max-w-xs">Review the Gemini AI explanation, check warning signs, download a PDF report, or find nearby hospitals.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Educational Disclaimer Section -->
+  <section id="disclaimer" class="py-12 bg-sky-50 dark:bg-slate-800/80 border-t border-sky-100 dark:border-slate-800">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <div class="inline-flex p-3 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 text-2xl mb-4">
+        <i class="fa-solid fa-circle-info"></i>
+      </div>
+      <h2 class="text-xl font-bold mb-3">Educational Disclaimer</h2>
+      <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+        This tool is for educational purposes only and does not replace professional medical advice, diagnosis, or treatment. HealthSenseAI does not make claims of medical certainty or diagnose diseases. Always consult with a qualified healthcare professional regarding any medical questions. In case of an emergency, please contact your local emergency services immediately.
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-heart-pulse text-sky-500 text-xl"></i>
+        <span class="text-white font-bold">HealthSenseAI</span>
+      </div>
+      <p class="text-xs">&copy; 2026 HealthSenseAI. All rights reserved. Developed for educational purposes.</p>
+    </div>
+  </footer>
+
+  <!-- Theme Script -->
+  <script src="js/theme.js"></script>
+</body>
+</html>

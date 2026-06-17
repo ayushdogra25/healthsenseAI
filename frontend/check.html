@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Symptom Checker - HealthSenseAI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              light: '#f0fdf4',
+              primary: '#0284c7',
+              secondary: '#16a34a',
+              dark: '#0f172a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col justify-between transition-colors duration-200">
+
+  <!-- Header -->
+  <header class="fixed top-0 w-full z-50 glass shadow-sm h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-6">
+      <a href="dashboard.html" class="flex items-center gap-2">
+        <div class="bg-sky-500 text-white p-2 rounded-xl shadow-md">
+          <i class="fa-solid fa-heart-pulse text-xl"></i>
+        </div>
+        <span class="text-xl font-bold bg-gradient-to-r from-sky-600 to-emerald-600 bg-clip-text text-transparent dark:from-sky-400 dark:to-emerald-400">
+          HealthSenseAI
+        </span>
+      </a>
+      
+      <nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
+        <a href="dashboard.html" class="text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-300 pb-1">Dashboard</a>
+        <a href="check.html" class="nav-link-active pb-1">Symptom Checker</a>
+        <a href="history.html" class="text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-300 pb-1">History</a>
+        <a href="hospitals.html" class="text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-300 pb-1">Find Hospitals</a>
+        <a href="profile.html" class="text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-300 pb-1">Profile</a>
+        <a href="admin.html" class="admin-only-link hidden text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 pb-1">Admin Panel</a>
+      </nav>
+    </div>
+    
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 border-l border-slate-200 dark:border-slate-700 pl-4">
+        <div class="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center font-bold text-sm shadow-md">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <span class="user-name-display hidden sm:inline text-sm font-bold truncate max-w-[120px]">User</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+    <!-- Symptom Entry Form Section -->
+    <section id="checker-form-section" class="space-y-8 animate-fade-in">
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Symptom Checker</h1>
+        <p class="text-slate-500 dark:text-slate-400 mt-2">Enter the symptoms you are currently experiencing to run our AI diagnostic recommendations.</p>
+      </div>
+
+      <!-- Main Input Card -->
+      <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-xl overflow-hidden">
+        <!-- Input Tabs -->
+        <div class="flex border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/20 text-sm font-semibold">
+          <button id="tab-dropdown" class="flex-1 py-4 text-sky-600 dark:text-sky-400 border-b-2 border-sky-500 flex justify-center items-center gap-2 focus:outline-none">
+            <i class="fa-solid fa-square-poll-horizontal"></i>
+            <span>Search Symptoms</span>
+          </button>
+          <button id="tab-text" class="flex-1 py-4 text-slate-500 dark:text-slate-400 hover:text-sky-500 flex justify-center items-center gap-2 focus:outline-none">
+            <i class="fa-solid fa-keyboard"></i>
+            <span>Type Text</span>
+          </button>
+          <button id="tab-voice" class="flex-1 py-4 text-slate-500 dark:text-slate-400 hover:text-sky-500 flex justify-center items-center gap-2 focus:outline-none">
+            <i class="fa-solid fa-microphone"></i>
+            <span>Voice Input</span>
+          </button>
+        </div>
+
+        <div class="p-8 space-y-6">
+          <!-- Tab 1: Search / Multi-Select Dropdown -->
+          <div id="content-dropdown" class="space-y-4">
+            <label class="block text-sm font-bold">Search and select symptoms from the list:</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </div>
+              <input type="text" id="symptom-search-input" class="block w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 focus:outline-none transition-all text-sm" placeholder="Type to search symptoms (e.g. fever, headache)...">
+              
+              <!-- Search Results Dropdown List -->
+              <div id="symptom-results-list" class="hidden absolute top-full left-0 right-0 max-h-60 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl mt-1 z-20 text-sm divide-y divide-slate-100 dark:divide-slate-700">
+                <!-- Dropdown items rendered via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Typed Text Input -->
+          <div id="content-text" class="hidden space-y-4">
+            <label for="symptoms-text-input" class="block text-sm font-bold">Enter symptoms (comma-separated):</label>
+            <textarea id="symptoms-text-input" rows="3" class="block w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 focus:outline-none transition-all text-sm resize-none" placeholder="Enter symptoms, e.g., fever, headache, cough, runny nose"></textarea>
+            <button type="button" id="parse-text-btn" class="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 px-3 py-1.5 rounded-lg font-semibold transition-colors">Parse Text & Add Tags</button>
+          </div>
+
+          <!-- Tab 3: Speech Voice Input -->
+          <div id="content-voice" class="hidden space-y-4 text-center py-4">
+            <div class="flex flex-col items-center gap-4">
+              <button type="button" id="voice-record-btn" class="w-20 h-20 rounded-full bg-red-100 text-red-500 hover:bg-red-200 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50 flex items-center justify-center text-3xl shadow-lg border border-red-200 dark:border-red-900/40 transition-all transform hover:scale-105 active:scale-95 focus:outline-none">
+                <i class="fa-solid fa-microphone"></i>
+              </button>
+              <div id="voice-status" class="text-sm font-semibold text-slate-400">Click microphone to start speaking</div>
+              <div id="voice-transcript" class="text-sm italic text-slate-500 dark:text-slate-400 max-w-md bg-slate-50 dark:bg-slate-900/30 p-3 rounded-xl min-h-12 w-full flex items-center justify-center border border-dashed border-slate-200 dark:border-slate-700">
+                Speech transcript will appear here...
+              </div>
+            </div>
+          </div>
+
+          <!-- Display Selected Symptoms Tag Badges -->
+          <div class="border-t border-slate-100 dark:border-slate-700 pt-6">
+            <h3 class="text-sm font-bold mb-3 flex items-center justify-between">
+              <span>Selected Symptoms (<span id="tags-count">0</span>):</span>
+              <button type="button" id="clear-tags-btn" class="text-xs text-red-500 hover:underline hidden">Clear All</button>
+            </h3>
+            <div id="selected-tags-container" class="flex flex-wrap gap-2 min-h-10 p-3 bg-slate-50 dark:bg-slate-900/30 rounded-2xl border border-slate-100 dark:border-slate-800">
+              <span class="text-xs text-slate-400 self-center">No symptoms selected yet. Use the tabs above to add symptoms.</span>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="button" id="analyze-health-btn" class="w-full bg-gradient-to-r from-sky-500 to-emerald-500 hover:from-sky-600 hover:to-emerald-600 text-white py-3.5 rounded-xl font-bold shadow-lg shadow-sky-500/20 transition-all transform hover:-translate-y-0.5 flex justify-center items-center gap-2">
+            <span>Analyze Health Symptoms</span>
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Prediction Results Section (Hidden by Default) -->
+    <section id="checker-results-section" class="hidden space-y-8 animate-fade-in">
+      <div class="flex flex-col sm:flex-row items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4 mb-4 gap-4">
+        <div>
+          <button type="button" id="results-back-btn" class="text-sm text-slate-500 hover:text-sky-500 flex items-center gap-1">
+            <i class="fa-solid fa-arrow-left"></i> Back to Input
+          </button>
+          <h1 class="text-3xl font-extrabold tracking-tight mt-2">Health Assessment Result</h1>
+        </div>
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+          <button type="button" id="save-report-btn" class="flex-1 sm:flex-none bg-sky-600 hover:bg-sky-700 text-white px-4 py-2.5 rounded-xl font-bold text-sm shadow-md transition-colors flex items-center justify-center gap-2">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Save Report
+          </button>
+          <button type="button" id="download-pdf-btn" class="flex-1 sm:flex-none border border-slate-300 dark:border-slate-700 hover:border-sky-500 hover:text-sky-500 px-4 py-2.5 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2">
+            <i class="fa-solid fa-file-pdf"></i> Download PDF
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Predictions & Risk Column -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Entered Symptoms Card -->
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-md">
+            <h3 class="font-bold text-lg mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-clipboard-list text-sky-500"></i> Symptoms Analyzed
+            </h3>
+            <div id="results-symptoms-tags" class="flex flex-wrap gap-2">
+              <!-- Rendered tags -->
+            </div>
+          </div>
+
+          <!-- ML Predictions Card -->
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-md">
+            <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-brain text-sky-500"></i> Probable Matching Diseases
+            </h3>
+            
+            <div id="results-predictions-list" class="space-y-4">
+              <!-- Disease progress bars rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Gemini AI Explanation Card -->
+          <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-md">
+            <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-sparkles text-emerald-500"></i> AI Educational Recommendations
+            </h3>
+            <!-- Gemini Markdown block -->
+            <div id="results-ai-explanation" class="prose dark:prose-invert max-w-none text-sm leading-relaxed space-y-4">
+              <!-- Rendered Markdown -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Risk Score Sidebar Column -->
+        <div class="space-y-6">
+          <!-- Risk Score Card -->
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-md text-center">
+            <h3 class="font-bold text-lg mb-4 text-slate-600 dark:text-slate-300">Health Risk Score</h3>
+            
+            <!-- Circular/Bar Indicator -->
+            <div class="relative w-36 h-36 mx-auto flex items-center justify-center mb-4">
+              <!-- Simple circular progress indicator using svg -->
+              <svg class="w-full h-full transform -rotate-90">
+                <circle cx="72" cy="72" r="62" stroke="#e2e8f0" stroke-width="12" fill="transparent" class="dark:stroke-slate-700" />
+                <circle id="risk-svg-progress" cx="72" cy="72" r="62" stroke="#10b981" stroke-width="12" fill="transparent" stroke-dasharray="390" stroke-dashoffset="390" class="transition-all duration-1000 ease-out" />
+              </svg>
+              <div class="absolute flex flex-col items-center">
+                <span id="risk-score-value" class="text-3xl font-extrabold">0</span>
+                <span class="text-[10px] text-slate-400 font-semibold tracking-wider">OUT OF 100</span>
+              </div>
+            </div>
+
+            <!-- Risk Badge -->
+            <div id="risk-badge" class="inline-block px-4 py-1.5 rounded-full text-xs font-extrabold uppercase mb-4 tracking-wider">
+              Low Risk
+            </div>
+
+            <p id="risk-explanation" class="text-xs text-slate-500 dark:text-slate-400 px-2 leading-relaxed">
+              Calculated based on severe symptoms and disease indices.
+            </p>
+          </div>
+
+          <!-- Quick Actions/Helplines -->
+          <div class="bg-gradient-to-br from-sky-500 to-sky-600 p-6 rounded-3xl text-white shadow-md space-y-4">
+            <h3 class="font-bold text-lg flex items-center gap-2">
+              <i class="fa-solid fa-circle-exclamation"></i> Advice Indicators
+            </h3>
+            <p class="text-xs text-slate-100 leading-relaxed">
+              If your symptoms worsen or you display high risk criteria, locate medical facilities immediately.
+            </p>
+            <a href="hospitals.html" class="block w-full bg-white hover:bg-slate-100 text-sky-600 py-2.5 rounded-xl font-bold text-center text-sm transition-all shadow-md">
+              Find Nearby Hospitals
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Educational Disclaimer Banner -->
+      <div class="p-6 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900/30 rounded-2xl text-xs text-yellow-800 dark:text-yellow-400 flex gap-3">
+        <i class="fa-solid fa-triangle-exclamation text-lg mt-0.5 text-yellow-600"></i>
+        <div class="leading-relaxed">
+          <span class="font-bold uppercase tracking-wider">Educational Disclaimer:</span>
+          This tool is for educational purposes only and does not replace professional medical advice, diagnosis, or treatment. It does not claim medical certainty. Always consult a qualified medical provider for health advice.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-6 border-t border-slate-100 dark:border-slate-800 text-center text-xs text-slate-400 bg-white dark:bg-slate-950">
+    &copy; 2026 HealthSenseAI. Educational and guidance platform only.
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/check.js"></script>
+</body>
+</html>

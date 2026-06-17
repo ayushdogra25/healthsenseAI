@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nearby Hospitals - HealthSenseAI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              light: '#f0fdf4',
+              primary: '#0284c7',
+              secondary: '#16a34a',
+              dark: '#0f172a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col justify-between transition-colors duration-200">
+
+  <!-- Header -->
+  <header class="fixed top-0 w-full z-50 glass shadow-sm h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-6">
+      <a href="dashboard.html" class="flex items-center gap-2">
+        <div class="bg-sky-500 text-white p-2 rounded-xl shadow-md">
+          <i class="fa-solid fa-heart-pulse text-xl"></i>
+        </div>
+        <span class="text-xl font-bold bg-gradient-to-r from-sky-600 to-emerald-600 bg-clip-text text-transparent dark:from-sky-400 dark:to-emerald-400">
+          HealthSenseAI
+        </span>
+      </a>
+      
+      <nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
+        <a href="dashboard.html" class="text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-300 pb-1">Dashboard</a>
+        <a href="check.html" class="text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-300 pb-1">Symptom Checker</a>
+        <a href="history.html" class="text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-300 pb-1">History</a>
+        <a href="hospitals.html" class="nav-link-active pb-1">Find Hospitals</a>
+        <a href="profile.html" class="text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-300 pb-1">Profile</a>
+        <a href="admin.html" class="admin-only-link hidden text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 pb-1">Admin Panel</a>
+      </nav>
+    </div>
+    
+    <div class="flex items-center gap-4">
+      <button class="theme-toggle-btn p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none">
+        <i class="fa-solid fa-moon text-lg"></i>
+      </button>
+      
+      <div class="flex items-center gap-2 border-l border-slate-200 dark:border-slate-700 pl-4">
+        <div class="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center font-bold text-sm shadow-md">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <span class="user-name-display hidden sm:inline text-sm font-bold truncate max-w-[120px]">User</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+    <div class="mb-6 animate-fade-in">
+      <h1 class="text-3xl font-extrabold tracking-tight">Nearby Hospitals</h1>
+      <p class="text-slate-500 dark:text-slate-400 mt-1">Locate and navigate to the nearest healthcare and clinical centers based on your current location.</p>
+    </div>
+
+    <!-- Map & Sidebar Split Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch h-[600px] lg:h-[650px] animate-fade-in" style="animation-delay: 0.05s;">
+      <!-- Sidebar list -->
+      <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-xl p-6 flex flex-col justify-between overflow-hidden">
+        <div>
+          <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-list-ul text-sky-500"></i> Facilities List
+          </h3>
+          
+          <div id="location-status" class="bg-sky-50 dark:bg-sky-950/20 border border-sky-100 dark:border-sky-900/30 p-3 rounded-2xl text-xs text-sky-700 dark:text-sky-400 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-circle-notch loader-spinner text-sm"></i>
+            <span id="location-status-text">Requesting GPS location permissions...</span>
+          </div>
+        </div>
+
+        <!-- Scrollable Hospital list container -->
+        <div id="hospitals-list" class="flex-grow overflow-y-auto space-y-4 pr-1 mb-4 select-none">
+          <!-- Rendered dynamically -->
+          <div class="text-center text-slate-400 italic py-12">
+            <i class="fa-solid fa-hospital-user text-4xl mb-2 block"></i>
+            Waiting for location access...
+          </div>
+        </div>
+        
+        <!-- Emergency quick dial callout -->
+        <div class="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 p-3.5 rounded-2xl flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-red-500 text-white flex items-center justify-center text-sm shadow-md animate-pulse-soft">
+            <i class="fa-solid fa-phone-flip"></i>
+          </div>
+          <div>
+            <h4 class="font-extrabold text-xs text-red-700 dark:text-red-400">EMERGENCY SERVICES</h4>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">If you are in critical condition, dial your national emergency number immediately.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map Display (2 cols) -->
+      <div class="lg:col-span-2 relative flex items-stretch min-h-[400px] lg:min-h-0">
+        <div id="map" class="w-full h-full min-h-[400px] lg:min-h-0"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-6 border-t border-slate-100 dark:border-slate-800 text-center text-xs text-slate-400 bg-white dark:bg-slate-950">
+    &copy; 2026 HealthSenseAI. Educational and guidance platform only.
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/hospitals.js"></script>
+</body>
+</html>
