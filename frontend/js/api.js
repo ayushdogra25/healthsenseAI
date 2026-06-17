@@ -19,12 +19,29 @@ const api = {
     }
     
     const url = `${API_BASE_URL}${endpoint}`;
+    const method = options.method || 'GET';
+    
+    console.log(`[API] Request -> ${method} ${url}`);
     
     try {
       const response = await fetch(url, {
         ...options,
         headers,
       });
+      
+      const responseText = await response.text();
+      let data = null;
+      
+      if (responseText) {
+        try {
+          data = JSON.parse(responseText);
+        } catch (parseError) {
+          data = responseText;
+        }
+      }
+      
+      console.log(`[API] Response <- ${method} ${url} status=${response.status}`);
+      console.log(`[API] Response body <- ${method} ${url}:`, data);
       
       // Handle unauthorized (expired token)
       if (response.status === 401 && !endpoint.includes('/api/auth/')) {
@@ -33,15 +50,13 @@ const api = {
         throw new Error('Session expired. Please log in again.');
       }
       
-      const data = await response.json();
-      
       if (!response.ok) {
-        throw new Error(data.detail || 'An error occurred.');
+        throw new Error((data && data.detail) || 'An error occurred.');
       }
       
       return data;
     } catch (error) {
-      console.error(`API Error (${endpoint}):`, error);
+      console.error(`[API] Error (${endpoint}):`, error);
       throw error;
     }
   },
@@ -88,13 +103,12 @@ const api = {
   // Symptom Checker & ML Prediction
   async getSymptomsList() {
     const data = await this.fetch('/api/symptoms-list');
-    if (Array.isArray(data)) {
-      return data;
-    }
-    if (data && Array.isArray(data.symptoms)) {
-      return data.symptoms;
-    }
-    return [];
+    const symptoms = Array.isArray(data)
+      ? data
+      : (data && Array.isArray(data.symptoms) ? data.symptoms : []);
+
+    console.log(`[API] Symptoms loaded from /api/symptoms-list: ${symptoms.length}`);
+    return symptoms;
   },
 
   async predict(symptoms) {

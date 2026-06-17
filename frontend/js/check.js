@@ -103,14 +103,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadSymptomVocabulary() {
     try {
+      console.log('[Symptoms] Starting symptom vocabulary load from /api/symptoms-list');
       const symptoms = await api.getSymptomsList();
       allSymptoms = Array.isArray(symptoms) ? symptoms : [];
 
+      console.log('[Symptoms] Loaded into dropdown:', allSymptoms.length);
+      console.log('[Symptoms] First few symptoms:', allSymptoms.slice(0, 8));
+
       if (allSymptoms.length === 0) {
-        console.warn('Symptoms list endpoint returned no items.');
+        console.warn('[Symptoms] Symptoms list endpoint returned no items.');
       }
     } catch (err) {
-      console.error('Failed to load symptoms list from /api/symptoms-list:', err);
+      console.error('[Symptoms] Failed to load symptoms list from /api/symptoms-list:', err);
       showTagFeedback('Unable to load symptom suggestions right now. Please refresh the page.');
     }
   }
@@ -151,6 +155,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Filter symptoms
     const filtered = allSymptoms.filter(sym => sym.toLowerCase().includes(query) && !selectedSymptoms.includes(sym));
+
+    console.log('[Symptoms] Rendering dropdown suggestions:', {
+      query,
+      totalLoaded: allSymptoms.length,
+      visibleCount: filtered.length
+    });
     
     if (filtered.length === 0) {
       resultsList.innerHTML = '<div class="p-3 text-slate-400 italic">No symptoms found</div>';

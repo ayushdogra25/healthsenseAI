@@ -1,4 +1,5 @@
 import json
+import logging
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
@@ -9,6 +10,9 @@ from backend.database.models import User
 from backend.ml.predict import DiseasePredictor
 from backend.services.gemini import generate_explanation
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 router = APIRouter(prefix="/api", tags=["prediction"])
 
 class PredictRequest(BaseModel):
@@ -130,14 +134,48 @@ def get_all_symptoms():
     Returns the full list of 377 symptoms that the model is trained on.
     Used for the searchable dropdown on the frontend.
     """
-    predictor = DiseasePredictor()
+    logger.info("GET /api/symptoms-list called")
 
-    if predictor.symptom_columns is None:
-        # Attempt lazy loading only when the endpoint is requested.
-        predictor.load_assets()
+    try:
+        predictor = DiseasePredictor()
 
-    if predictor.symptom_columns is None:
-        # Fallback list if assets aren't built yet
-        return ["fever", "cough", "headache", "shortness of breath", "fatigue", "nausea", "vomiting", "sore throat", "diarrhea"]
+        if predictor.symptom_columns is None:
+            # Attempt lazy loading only when the endpoint is requested.
+            predictor.load_assets()
 
-    return predictor.symptom_columns
+        if predictor.symptom_columns is None:
+            # Fallback list if assets aren't built yet
+            fallback_symptoms = [
+                "fever", "cough", "headache", "shortness of breath",
+                "fatigue", "nausea", "vomiting", "sore throat", "diarrhea"
+            ]
+            logger.warning(
+                "GET /api/symptoms-list using fallback symptoms because model assets were unavailable"
+            )
+            logger.info(
+                "GET /api/symptoms-list loaded %d symptoms (fallback)",
+                len(fallback_symptoms)
+            )
+            logger.info(
+                "GET /api/symptoms-list response size=%d bytes",
+                len(json.dumps(fallback_symptoms).encode("utf-8"))
+            )
+            return fallback_symptoms
+
+        symptom_list = predictor.symptom_columns
+        response_body = json.dumps(symptom_list)
+        logger.info(
+            "GET /api/symptoms-list loaded %d symptoms",
+            len(symptom_list)
+        )
+        logger.info(
+            "GET /api/symptoms-list response size=%d bytes",
+            len(response_body.encode("utf-8"))
+        )
+        return symptom_list
+    except Exception:
+        logger.exception("Exception while handling GET /api/symptoms-list")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An error occurred while loading symptoms"
+        )
