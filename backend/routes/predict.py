@@ -1,5 +1,7 @@
 import json
 import logging
+import time
+import traceback
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
@@ -134,48 +136,36 @@ def get_all_symptoms():
     Returns the full list of 377 symptoms that the model is trained on.
     Used for the searchable dropdown on the frontend.
     """
-    logger.info("GET /api/symptoms-list called")
+    start_time = time.perf_counter()
+    logger.info("BEGIN GET /api/symptoms-list")
 
     try:
         predictor = DiseasePredictor()
-
-        if predictor.symptom_columns is None:
-            # Attempt lazy loading only when the endpoint is requested.
-            predictor.load_assets()
-
-        if predictor.symptom_columns is None:
-            # Fallback list if assets aren't built yet
-            fallback_symptoms = [
-                "fever", "cough", "headache", "shortness of breath",
-                "fatigue", "nausea", "vomiting", "sore throat", "diarrhea"
-            ]
-            logger.warning(
-                "GET /api/symptoms-list using fallback symptoms because model assets were unavailable"
-            )
-            logger.info(
-                "GET /api/symptoms-list loaded %d symptoms (fallback)",
-                len(fallback_symptoms)
-            )
-            logger.info(
-                "GET /api/symptoms-list response size=%d bytes",
-                len(json.dumps(fallback_symptoms).encode("utf-8"))
-            )
-            return fallback_symptoms
-
-        symptom_list = predictor.symptom_columns
+        symptom_list = predictor.load_symptom_columns_only()
         response_body = json.dumps(symptom_list)
+        response_size = len(response_body.encode("utf-8"))
+        elapsed = time.perf_counter() - start_time
+
         logger.info(
-            "GET /api/symptoms-list loaded %d symptoms",
-            len(symptom_list)
-        )
-        logger.info(
-            "GET /api/symptoms-list response size=%d bytes",
-            len(response_body.encode("utf-8"))
+            "END GET /api/symptoms-list loaded=%d symptoms elapsed=%.3fs response_size=%d bytes",
+            len(symptom_list),
+            elapsed,
+            response_size,
         )
         return symptom_list
     except Exception:
-        logger.exception("Exception while handling GET /api/symptoms-list")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An error occurred while loading symptoms"
+        elapsed = time.perf_counter() - start_time
+        logger.exception(
+            "FAIL GET /api/symptoms-list elapsed=%.3fs",
+            elapsed,
         )
+
+        fallback_symptoms = [
+            "fever", "cough", "headache", "shortness of breath",
+            "fatigue", "nausea", "vomiting", "sore throat", "diarrhea"
+        ]
+        logger.warning(
+            "Returning fallback symptom list after exception; count=%d",
+            len(fallback_symptoms),
+        )
+        return fallback_symptoms

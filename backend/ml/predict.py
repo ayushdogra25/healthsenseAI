@@ -1,33 +1,61 @@
-import os
 import json
+import os
+from pathlib import Path
+
 import joblib
 import numpy as np
 import pandas as pd
 
+
 class DiseasePredictor:
     def __init__(self):
-        self.base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.model_path = os.path.join(self.base_dir, "model.joblib")
-        self.le_path = os.path.join(self.base_dir, "label_encoder.joblib")
-        self.symptoms_path = os.path.join(self.base_dir, "symptom_columns.json")
+        self.base_dir = Path(__file__).resolve().parent
+        self.model_path = self.base_dir / "model.joblib"
+        self.le_path = self.base_dir / "label_encoder.joblib"
+        self.symptoms_path = self.base_dir / "symptom_columns.json"
 
         self.model = None
         self.label_encoder = None
         self.symptom_columns = None
         self.symptom_to_idx = {}
 
+    def load_symptom_columns_only(self):
+        """
+        Load only the symptom vocabulary without touching the heavy model artifacts.
+        This is used by the symptom dropdown endpoint to avoid slow or failing
+        model loads on production deployments.
+        """
+        if self.symptom_columns is not None:
+            return self.symptom_columns
+
+        symptoms_path = Path(self.symptoms_path).resolve()
+        if not symptoms_path.is_file():
+            raise FileNotFoundError(f"Symptoms file not found: {symptoms_path}")
+
+        with symptoms_path.open('r', encoding='utf-8') as f:
+            self.symptom_columns = json.load(f)
+
+        self.symptom_to_idx = {
+            symptom.lower().strip(): idx
+            for idx, symptom in enumerate(self.symptom_columns)
+        }
+        return self.symptom_columns
+
     def load_assets(self):
-        if (os.path.exists(self.model_path) and 
-            os.path.exists(self.le_path) and 
-            os.path.exists(self.symptoms_path)):
-            
+        if (self.model_path.is_file() and
+            self.le_path.is_file() and
+            self.symptoms_path.is_file()):
+
             self.model = joblib.load(self.model_path)
             self.label_encoder = joblib.load(self.le_path)
-            with open(self.symptoms_path, 'r', encoding='utf-8') as f:
+            with self.symptoms_path.open('r', encoding='utf-8') as f:
                 self.symptom_columns = json.load(f)
-            
+
             # Map symptom names to column index for quick lookup
-            self.symptom_to_idx = {symptom.lower().strip(): idx for idx, symptom in enumerate(self.symptom_columns)}
+            self.symptom_to_idx = {
+                symptom.lower().strip(): idx
+                for idx, symptom in enumerate(self.symptom_columns)
+            }
             return True
         return False
 
