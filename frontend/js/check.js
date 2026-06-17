@@ -103,9 +103,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadSymptomVocabulary() {
     try {
-      allSymptoms = await api.getSymptomsList();
+      const symptoms = await api.getSymptomsList();
+      allSymptoms = Array.isArray(symptoms) ? symptoms : [];
+
+      if (allSymptoms.length === 0) {
+        console.warn('Symptoms list endpoint returned no items.');
+      }
     } catch (err) {
-      console.error("Failed to load symptoms list:", err);
+      console.error('Failed to load symptoms list from /api/symptoms-list:', err);
+      showTagFeedback('Unable to load symptom suggestions right now. Please refresh the page.');
     }
   }
 

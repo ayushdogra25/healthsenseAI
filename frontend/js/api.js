@@ -87,7 +87,14 @@ const api = {
 
   // Symptom Checker & ML Prediction
   async getSymptomsList() {
-    return this.fetch('/api/symptoms-list');
+    const data = await this.fetch('/api/symptoms-list');
+    if (Array.isArray(data)) {
+      return data;
+    }
+    if (data && Array.isArray(data.symptoms)) {
+      return data.symptoms;
+    }
+    return [];
   },
 
   async predict(symptoms) {
